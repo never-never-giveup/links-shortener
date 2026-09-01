@@ -65,7 +65,13 @@ omit = ["alembic/*", "tests/*", "litestar/*"]
 [tool.coverage.report]
 fail_under = 100
 show_missing = true
-exclude_lines = ["if TYPE_CHECKING:", "pragma: no cover", "raise NotImplementedError"]
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "^\\s*class \\w+\\(.*\\bProtocol\\b.*\\):",
+    "^\\s*(async )?def \\w+.*:\\s*\\.\\.\\.\\s*$",
+    "@(typing\\.)?overload",
+]
 
 [tool.bandit]
 exclude_dirs = ["tests", "alembic"]
