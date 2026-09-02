@@ -325,7 +325,7 @@ import re
 import sys
 
 
-CHARS_NEVER_ESCAPE = "()-+&."   # эти эскейпы pandoc лишние
+CHARS_NEVER_ESCAPE = "()-+&."  # эти эскейпы pandoc лишние
 
 
 def fix_inline_code(match: re.Match) -> str:
@@ -339,26 +339,26 @@ def fix_inline_code(match: re.Match) -> str:
     if not (inner.startswith(open_) and inner.endswith(close_)):
         return inner
 
-    body = inner[len(open_):-len(close_)]
+    body = inner[len(open_) : -len(close_)]
 
     # 2. { } → HTML entities (Confluence НЕ нормализует обратно)
     body = body.replace("{", "&#123;").replace("}", "&#125;")
 
     # 3. < > → Unicode angles (Confluence нормализует &lt; &gt; обратно — поэтому Unicode)
     body = body.replace("<", "⟨").replace(">", "⟩")
-    body = body.replace("&lt;", "⟨").replace("&gt;", "⟩")   # миграция
+    body = body.replace("&lt;", "⟨").replace("&gt;", "⟩")  # миграция
 
     # 4. Pair-маркеры разметки → Unicode-аналоги
-    body = body.replace("*", "∗")   # bold → asterisk operator
-    body = body.replace("-", "−")   # strikethrough → minus sign
-    body = body.replace("+", "＋")   # underline → fullwidth plus
-    body = body.replace("~", "∼")   # subscript → tilde operator
-    body = body.replace("^", "ˆ")   # superscript → modifier circumflex
+    body = body.replace("*", "∗")  # bold → asterisk operator
+    body = body.replace("-", "−")  # strikethrough → minus sign
+    body = body.replace("+", "＋")  # underline → fullwidth plus
+    body = body.replace("~", "∼")  # subscript → tilde operator
+    body = body.replace("^", "ˆ")  # superscript → modifier circumflex
 
     # 5. Named HTML entities — pandoc генерит их для literal backslash и т. д.
     body = body.replace("&bsol;", "⧵")  # backslash → REVERSE SOLIDUS OPERATOR (U+29F5)
-    body = body.replace("&sol;", "/")    # forward slash → literal
-    body = body.replace("&num;", "#")    # number sign → literal
+    body = body.replace("&sol;", "/")  # forward slash → literal
+    body = body.replace("&num;", "#")  # number sign → literal
 
     return open_ + body + close_
 

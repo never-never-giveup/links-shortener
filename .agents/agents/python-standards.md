@@ -47,6 +47,7 @@
 def create_link(url, archived=False):
     return {"id": 1, "url": url}
 
+
 # ✅
 def create_link(url: str, archived: bool = False) -> Link:
     return Link(id=1, original_url=url, archived=archived)
@@ -61,8 +62,11 @@ def create_link(url: str, archived: bool = False) -> Link:
 ~~~python
 # ❌ Устаревший стиль
 from typing import Optional, List, Dict, Union
+
+
 def find(id: int) -> Optional[Link]: ...
 def items() -> List[Dict[str, int]]: ...
+
 
 # ✅ Современный стиль
 def find(id: int) -> Link | None: ...
@@ -75,6 +79,7 @@ def items() -> list[dict[str, int]]: ...
 # ❌
 def clear_cache(self):
     self._cache = {}
+
 
 # ✅
 def clear_cache(self) -> None:
@@ -173,6 +178,7 @@ def process_links(links: list[Link]) -> str:
     save_to_file(report)
     return report
 
+
 # ✅ Разделение
 def calculate_active_rate(links: list[Link]) -> float: ...
 def format_rate(rate: float) -> str: ...
@@ -187,6 +193,7 @@ def save_report(text: str, path: Path) -> None: ...
 class LinkRepositoryProtocol(Protocol):
     async def get_by_code(self, code: str) -> Link | None: ...
     async def increment_clicks(self, code: str) -> Link | None: ...
+
 
 class LinkService:
     def __init__(self, repo: LinkRepositoryProtocol) -> None:
@@ -253,9 +260,12 @@ except TimeoutError:
 # ❌
 def is_valid_title(title: str) -> bool:
     return bool(
-        title is not None and isinstance(title, str)
-        and len(title.strip()) > 0 and not title.strip() == ""
+        title is not None
+        and isinstance(title, str)
+        and len(title.strip()) > 0
+        and not title.strip() == ""
     )
+
 
 # ✅
 def is_valid_title(title: str) -> bool:
@@ -284,8 +294,10 @@ def is_valid_title(title: str) -> bool:
 
 ~~~python
 # ❌ Magic numbers
-if len(title) > 255: ...
-if rate > 75: ...
+if len(title) > 255:
+    ...
+if rate > 75:
+    ...
 
 # ✅
 MAX_TITLE_LENGTH: int = 255
@@ -301,6 +313,7 @@ COMPLETION_RATE_EXCELLENT: float = 75.0
 ~~~python
 # ❌
 def process(items: list[str] = []) -> list[str]: ...
+
 
 # ✅
 def process(items: list[str] | None = None) -> list[str]:
@@ -462,6 +475,7 @@ def handle_event(event: dict[str, object]) -> str:
 ~~~python
 from typing import Self
 
+
 class QueryBuilder:
     def where(self, predicate: str) -> Self:
         self._predicates.append(predicate)
@@ -495,6 +509,7 @@ except* DatabaseError as eg:
 ~~~python
 # ❌ Старый стиль (TypeAlias из typing)
 from typing import TypeAlias
+
 UserId: TypeAlias = int
 Maybe = list[int] | None
 
@@ -512,13 +527,16 @@ type Point = tuple[float, float]
 # ✅
 from enum import StrEnum
 
+
 class LinkStatus(StrEnum):
     ACTIVE = "active"
     ARCHIVED = "archived"
     DELETED = "deleted"
 
+
 # Сравнение с обычной строкой работает напрямую
-if status == "active": ...
+if status == "active":
+    ...
 ~~~
 
 `StrEnum` поверх `Enum` экономит boilerplate и работает с JSON / БД / API без `.value`.
