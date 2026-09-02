@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class CreateLinkRequest(BaseModel):
     url: str
-    ttl_seconds: int | None = None
+    ttl_seconds: int | None = Field(default=None, gt=0)
     custom_code: str | None = None
 
 
