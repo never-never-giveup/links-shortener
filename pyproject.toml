@@ -60,7 +60,7 @@ addopts = "-q"
 
 [tool.coverage.run]
 branch = true
-omit = ["alembic/*", "tests/*", "litestar/*"]
+omit = ["alembic/*", "tests/*", "litestar/*", "locustfile.py"]
 
 [tool.coverage.report]
 fail_under = 100
