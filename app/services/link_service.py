@@ -21,6 +21,7 @@ class LinkRepositoryProtocol(Protocol):
     async def get_by_code(self, short_code: str) -> Link | None: ...
     async def list_all(self, limit: int = 100) -> list[Link]: ...
     async def update(self, link: Link) -> Link: ...
+    async def delete_by_code(self, short_code: str) -> bool: ...
 
 
 class LinkService:
@@ -79,3 +80,9 @@ class LinkService:
     async def disable_link(self, short_code: str) -> Link:
         link = await self.get_link(short_code)
         return await self._repository.update(link.disable())
+
+    async def delete_link(self, short_code: str) -> None:
+        """Удаляет ссылку по short_code. Поднимает LinkNotFoundError если ссылки нет."""
+        deleted = await self._repository.delete_by_code(short_code)
+        if not deleted:
+            raise LinkNotFoundError(short_code)

@@ -193,3 +193,37 @@ async def test_disable_link_updates_db() -> None:
         async with SessionLocal() as session:
             rows = (await session.execute(text("SELECT * FROM links"))).fetchall()
             assert rows[0].disabled is True
+
+
+async def test_delete_link_returns_204() -> None:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(
+        transport=transport, base_url="http://test", follow_redirects=False
+    ) as client:
+        link = await _create_link(client, "https://example.com")
+        resp = await client.delete(f"/links/{link['short_code']}")
+        assert resp.status_code == 204
+        assert resp.content == b""
+        # После удаления ссылка недоступна
+        assert (await client.get(f"/links/{link['short_code']}")).status_code == 404
+
+
+async def test_delete_link_nonexistent_returns_404() -> None:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(
+        transport=transport, base_url="http://test", follow_redirects=False
+    ) as client:
+        resp = await client.delete("/links/nonexistent")
+        assert resp.status_code == 404
+
+
+async def test_delete_link_removes_from_db() -> None:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(
+        transport=transport, base_url="http://test", follow_redirects=False
+    ) as client:
+        link = await _create_link(client, "https://example.com")
+        await client.delete(f"/links/{link['short_code']}")
+        async with SessionLocal() as session:
+            rows = (await session.execute(text("SELECT * FROM links"))).fetchall()
+            assert rows == []

@@ -41,6 +41,12 @@ class FakeLinkRepository:
         self._store[link.short_code.value] = link
         return link
 
+    async def delete_by_code(self, short_code: str) -> bool:
+        if short_code in self._store:
+            del self._store[short_code]
+            return True
+        return False
+
 
 def make_service() -> tuple[LinkService, FakeLinkRepository]:
     """Создаёт сервис с in-memory Fake-репозиторием."""
@@ -195,3 +201,19 @@ async def test_disable_link_nonexistent_raises() -> None:
     service, _ = make_service()
     with pytest.raises(LinkNotFoundError, match="code1234"):
         await service.disable_link("code1234")
+
+
+# --- delete_link ---
+
+
+async def test_delete_link_removes_link() -> None:
+    service, repo = make_service()
+    created = await service.create_link("https://example.com")
+    await service.delete_link(created.short_code.value)
+    assert await repo.get_by_code(created.short_code.value) is None
+
+
+async def test_delete_link_nonexistent_raises() -> None:
+    service, _ = make_service()
+    with pytest.raises(LinkNotFoundError, match="code1234"):
+        await service.delete_link("code1234")

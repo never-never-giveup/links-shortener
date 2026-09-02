@@ -43,3 +43,11 @@ async def disable_link(short_code: str, service: ServiceDep) -> LinkResponse:
     except DomainError as exc:
         raise_for_domain_error(exc)
     return to_response(link)
+
+
+@router.delete("/{short_code}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_link(short_code: str, service: ServiceDep) -> None:
+    try:
+        await service.delete_link(short_code)
+    except DomainError as exc:
+        raise_for_domain_error(exc)

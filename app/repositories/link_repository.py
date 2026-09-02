@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import select, update
+from sqlalchemy import CursorResult, delete, select, update
 
 from app.db.models import LinkModel
 from app.domain.link import Link
@@ -62,3 +62,11 @@ class LinkRepository:
         )
         await self._session.execute(stmt)
         return link
+
+    async def delete_by_code(self, short_code: str) -> bool:
+        """Удаляет ссылку по short_code. Возвращает True если строка была удалена."""
+        stmt = delete(LinkModel).where(LinkModel.short_code == short_code)
+        result = await self._session.execute(stmt)
+        # execute() типизирован как Result[Any], но для DML реально возвращается CursorResult
+        affected = cast(CursorResult[Any], result).rowcount or 0
+        return affected > 0
