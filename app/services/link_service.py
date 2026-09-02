@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import secrets
 from datetime import UTC, datetime, timedelta
 from typing import Protocol
 
+from app.domain.codegen import generate_short_code
 from app.domain.errors import (
     LinkDisabledError,
     LinkExpiredError,
@@ -11,7 +11,7 @@ from app.domain.errors import (
     ShortCodeTakenError,
 )
 from app.domain.link import Link, LinkStatus
-from app.domain.value_objects import CODE_ALPHABET, ShortCode, TargetUrl
+from app.domain.value_objects import DEFAULT_CODE_LENGTH, ShortCode, TargetUrl
 
 
 class LinkRepositoryProtocol(Protocol):
@@ -27,12 +27,13 @@ class LinkRepositoryProtocol(Protocol):
 class LinkService:
     """Бизнес-логика ссылок: создание с TTL, резолв со статусом, счётчик переходов, отключение."""
 
-    def __init__(self, repository: LinkRepositoryProtocol, code_length: int = 7) -> None:
+    def __init__(
+        self,
+        repository: LinkRepositoryProtocol,
+        code_length: int = DEFAULT_CODE_LENGTH,
+    ) -> None:
         self._repository = repository
         self._code_length = code_length
-
-    def _generate_code(self) -> ShortCode:
-        return ShortCode("".join(secrets.choice(CODE_ALPHABET) for _ in range(self._code_length)))
 
     async def create_link(
         self,
@@ -46,7 +47,7 @@ class LinkService:
             if await self._repository.get_by_code(code.value) is not None:
                 raise ShortCodeTakenError(code.value)
         else:
-            code = self._generate_code()
+            code = generate_short_code(self._code_length)
         expires_at = (
             now + timedelta(seconds=ttl_seconds) if ttl_seconds and ttl_seconds > 0 else None
         )

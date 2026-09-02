@@ -15,6 +15,7 @@ CODE_ALPHABET: str = string.ascii_letters + string.digits
 _CODE_CHARS: frozenset[str] = frozenset(CODE_ALPHABET)
 MIN_CODE_LENGTH: int = 4
 MAX_CODE_LENGTH: int = 16
+DEFAULT_CODE_LENGTH: int = 7
 
 
 def _reject_ssrf(hostname: str) -> None:
