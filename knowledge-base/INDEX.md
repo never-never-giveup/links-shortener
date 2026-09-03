@@ -16,6 +16,7 @@
 | Карточка | Источник | Дата проверки |
 |---|---|---|
 | [raw/README.md](raw/README.md) | Описание слоя и реестр карточек | — |
+| [raw/llm-wiki.md](raw/llm-wiki.md) | gist.github.com/karpathy | 2026-09-03 |
 | [raw/conventional-commits.md](raw/conventional-commits.md) | conventionalcommits.org | 2026-09-03 |
 | [raw/keep-a-changelog.md](raw/keep-a-changelog.md) | keepachangelog.com | 2026-09-03 |
 | [raw/fastapi.md](raw/fastapi.md) | fastapi.tiangolo.com | 2026-09-03 |
