@@ -4,10 +4,12 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+MAX_TTL_SECONDS: int = 86_400
+
 
 class CreateLinkRequest(BaseModel):
     url: str
-    ttl_seconds: int | None = Field(default=None, gt=0)
+    ttl_seconds: int | None = Field(default=None, gt=0, le=MAX_TTL_SECONDS)
     custom_code: str | None = None
 
 
