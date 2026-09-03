@@ -18,6 +18,7 @@
 
 | Карточка | Источник | Дата проверки |
 |---|---|---|
+| [llm-wiki.md](llm-wiki.md) | gist.github.com/karpathy | 2026-09-03 |
 | [conventional-commits.md](conventional-commits.md) | conventionalcommits.org | 2026-09-03 |
 | [keep-a-changelog.md](keep-a-changelog.md) | keepachangelog.com | 2026-09-03 |
 | [fastapi.md](fastapi.md) | fastapi.tiangolo.com | 2026-09-03 |
