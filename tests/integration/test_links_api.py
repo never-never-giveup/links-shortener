@@ -195,6 +195,33 @@ async def test_post_link_negative_ttl_returns_422() -> None:
             assert rows == []
 
 
+async def test_post_link_ttl_max_returns_201() -> None:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(
+        transport=transport, base_url="http://test", follow_redirects=False
+    ) as client:
+        resp = await client.post(
+            "/links", json={"url": "https://example.com", "ttl_seconds": 86400}
+        )
+        assert resp.status_code == 201
+        body = resp.json()
+        assert body["expires_at"] is not None
+
+
+async def test_post_link_ttl_over_max_returns_422() -> None:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(
+        transport=transport, base_url="http://test", follow_redirects=False
+    ) as client:
+        resp = await client.post(
+            "/links", json={"url": "https://example.com", "ttl_seconds": 86401}
+        )
+        assert resp.status_code == 422
+        async with SessionLocal() as session:
+            rows = (await session.execute(text("SELECT * FROM links"))).fetchall()
+            assert rows == []
+
+
 async def test_post_link_ttl_one_returns_201_with_expires() -> None:
     transport = ASGITransport(app=app)
     async with AsyncClient(
